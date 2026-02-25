@@ -1,54 +1,78 @@
 <?php
-
 namespace App\Traits;
 
 use DateTime;
+use Exception;
 
 trait HasHumanTime {
     /**
      * Calculates precise difference and returns a human-readable string.
      */
     public function getDetailedAge(string $date): string {
-        $start = new DateTime($date);
-        $now = new DateTime();
-        
-        if ($start > $now) return "Date is in the future";
+        try {
+            $start = new DateTime($date);
+            $now = new DateTime();
+            
+            if ($start > $now) return "Date is in the future";
 
-        $diff = $now->diff($start);
+            $diff = $now->diff($start);
 
-        $parts = [
-            'y' => 'year',
-            'm' => 'month',
-            'd' => 'day',
-            'h' => 'hour',
-            'i' => 'minute',
-            's' => 'second',
-        ];
+            $parts = [
+                'y' => 'year',
+                'm' => 'month',
+                'd' => 'day',
+                'h' => 'hour',
+                'i' => 'minute',
+                's' => 'second',
+            ];
 
-        $output = [];
-        foreach ($parts as $key => $label) {
-            if ($diff->$key > 0) {
-                $output[] = $diff->$key . ' ' . $label . ($diff->$key > 1 ? 's' : '');
+            $output = [];
+            foreach ($parts as $key => $label) {
+                if ($diff->$key > 0) {
+                    $output[] = $diff->$key . ' ' . $label . ($diff->$key > 1 ? 's' : '');
+                }
             }
-        }
 
-        return $output ? implode(', ', $output) : 'Just now';
+            return $output ? implode(', ', $output) : 'Just now';
+        } catch (Exception $e) {
+            return "Invalid date format";
+        }
     }
 
-    /** Keep your existing method for the "Time Ago" style **/
-    public function getElapsed(string $date): string {
-        $timestamp = strtotime($date);
-        $seconds = time() - $timestamp;
-        if ($seconds < 1) return 'Just now';
-        
-        $units = [31536000 => 'year', 2592000 => 'month', 86400 => 'day', 3600 => 'hour', 60 => 'minute', 1 => 'second'];
-        foreach ($units as $unitSeconds => $label) {
-            $division = $seconds / $unitSeconds;
-            if ($division >= 1) {
-                $value = round($division);
-                return $value . ' ' . $label . ($value > 1 ? 's' : '') . ' ago';
+    /**
+     * Generates advanced statistics and fixes the parsing error.
+     */
+    public function getStats(string $date): array {
+        try {
+            $start = new DateTime($date);
+            $now = new DateTime();
+            $diff = $now->diff($start);
+
+            $totalDays = $diff->days;
+            
+            // FIX: We must provide a Year. We'll use the current year.
+            $currentYear = $now->format('Y');
+            $birthdayString = $currentYear . '-' . $start->format('m-d');
+            $nextBday = new DateTime($birthdayString);
+
+            // If the birthday has already passed this year, move to the next year
+            if ($nextBday < $now && $now->format('m-d') !== $start->format('m-d')) {
+                $nextBday->modify('+1 year');
             }
+
+            $untilBday = $now->diff($nextBday);
+
+            return [
+                'total_days'    => number_format($totalDays),
+                'total_weeks'   => number_format(floor($totalDays / 7)),
+                'total_hours'   => number_format(($totalDays * 24) + $diff->h),
+                'days_until_next' => $untilBday->days,
+                'is_birthday'   => ($now->format('m-d') === $start->format('m-d')),
+                // NEW FEATURE: Life Progress Percentage (based on 80-year expectancy)
+                'life_progress' => min(100, round(($diff->y / 80) * 100, 1))
+            ];
+        } catch (Exception $e) {
+            return [];
         }
-        return $date;
     }
 }
