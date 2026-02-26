@@ -69,7 +69,12 @@ trait HasHumanTime {
                 'days_until_next' => $untilBday->days,
                 'is_birthday'   => ($now->format('m-d') === $start->format('m-d')),
                 // NEW FEATURE: Life Progress Percentage (based on 80-year expectancy)
-                'life_progress' => min(100, round(($diff->y / 80) * 100, 1))
+                'life_progress' => min(100, round(($diff->y / 80) * 100, 1)),
+                'weeks_lived'     => floor($totalDays / 7),
+                'total_weeks_life' => 80 * 52, // 80 years in weeks
+                'mercury_age'     => round($totalDays / 87.97, 1),
+                'mars_age'        => round($totalDays / 686.98, 1),
+                'jupiter_age'     => round($totalDays / 4332.59, 2),
             ];
         } catch (Exception $e) {
             return [];

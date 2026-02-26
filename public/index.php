@@ -67,12 +67,33 @@ $stats = $selectedDate ? $helper->getStats($selectedDate) : null;
                 </div>
             </div>
 
-            <div class="bg-slate-900/50 border border-dashed border-white/20 p-6 rounded-2xl text-center">
+            <div class="bg-slate-900/50 border border-dashed border-white/20 p-6 rounded-2xl text-center mb-8">
                 <?php if ($stats['is_birthday']): ?>
                     <p class="text-xl font-bold text-yellow-400">🎉 Happy Birthday! Enjoy your day!</p>
                 <?php else: ?>
                     <p class="text-slate-400">Next birthday in <span class="text-white font-bold"><?= $stats['days_until_next'] ?></span> days.</p>
                 <?php endif; ?>
+            </div>
+
+            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-4 ml-2">Interplanetary Age</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-gradient-to-br from-slate-900 to-orange-900/20 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
+                    <p class="text-slate-400 text-xs font-bold mb-1">Mercury Years</p>
+                    <p class="text-3xl font-black text-orange-400"><?= $stats['mercury_age'] ?></p>
+                    <div class="absolute -right-2 -bottom-2 opacity-10 text-4xl">☄️</div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-slate-900 to-red-900/20 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
+                    <p class="text-slate-400 text-xs font-bold mb-1">Mars Years</p>
+                    <p class="text-3xl font-black text-red-500"><?= $stats['mars_age'] ?></p>
+                    <div class="absolute -right-2 -bottom-2 opacity-10 text-4xl">🔴</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-slate-900 to-yellow-900/20 border border-white/5 p-5 rounded-2xl relative overflow-hidden">
+                    <p class="text-slate-400 text-xs font-bold mb-1">Jupiter Years</p>
+                    <p class="text-3xl font-black text-yellow-600"><?= $stats['jupiter_age'] ?></p>
+                    <div class="absolute -right-2 -bottom-2 opacity-10 text-4xl">🪐</div>
+                </div>
             </div>
         <?php endif; ?>
     </div>
