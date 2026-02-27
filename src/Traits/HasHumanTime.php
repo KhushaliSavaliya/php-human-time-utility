@@ -80,4 +80,23 @@ trait HasHumanTime {
             return [];
         }
     }
+
+    public function getLifeGrid(string $date, int $expectancy = 80): array {
+        try {
+            $start = new DateTime($date);
+            $now = new DateTime();
+            $totalDays = $now->diff($start)->days;
+            
+            $weeksLived = floor($totalDays / 7);
+            $totalWeeksInLife = $expectancy * 52;
+            
+            return [
+                'lived' => $weeksLived,
+                'remaining' => max(0, $totalWeeksInLife - $weeksLived),
+                'total' => $totalWeeksInLife
+            ];
+        } catch (Exception $e) {
+            return ['lived' => 0, 'remaining' => 0, 'total' => 0];
+        }
+    }
 }

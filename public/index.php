@@ -12,6 +12,7 @@ $helper = new TimeDemo();
 $selectedDate = $_POST['dob'] ?? null;
 $ageResult = $selectedDate ? $helper->getDetailedAge($selectedDate) : null;
 $stats = $selectedDate ? $helper->getStats($selectedDate) : null;
+$gridData = $selectedDate ? $helper->getLifeGrid($selectedDate) : null;
 ?>
 
 <!DOCTYPE html>
@@ -95,6 +96,34 @@ $stats = $selectedDate ? $helper->getStats($selectedDate) : null;
                     <div class="absolute -right-2 -bottom-2 opacity-10 text-4xl">🪐</div>
                 </div>
             </div>
+
+            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-4 ml-2">Life Path (Each box is 1 week)</h3>
+            <div class="bg-slate-900 border border-white/10 p-6 rounded-3xl mb-12">
+                <div class="flex justify-between mb-4 text-xs font-mono">
+                    <span class="text-indigo-400">● Lived: <?= number_format($gridData['lived']) ?> weeks</span>
+                    <span class="text-slate-600">○ Remaining: <?= number_format($gridData['remaining']) ?> weeks</span>
+                </div>
+                
+                <div class="grid grid-cols-[repeat(auto-fill,minmax(8px,1fr))] gap-1 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                    <?php 
+                    for ($i = 0; $i < $gridData['total']; $i++): 
+                        $isLived = $i < $gridData['lived'];
+                    ?>
+                        <div class="aspect-square rounded-sm <?= $isLived ? 'bg-indigo-500/60' : 'bg-slate-800 border border-white/5' ?>"></div>
+                    <?php endfor; ?>
+                </div>
+                
+                <p class="mt-4 text-center text-slate-500 text-xs italic">
+                    Based on a standard 80-year human life expectancy.
+                </p>
+            </div>
+
+            <style>
+                /* Clean up the scrollbar for the grid */
+                .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+                .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+            </style>
         <?php endif; ?>
     </div>
 
