@@ -13,6 +13,7 @@ $selectedDate = $_POST['dob'] ?? null;
 $ageResult = $selectedDate ? $helper->getDetailedAge($selectedDate) : null;
 $stats = $selectedDate ? $helper->getStats($selectedDate) : null;
 $gridData = $selectedDate ? $helper->getLifeGrid($selectedDate) : null;
+$milestones = $selectedDate ? $helper->getMilestones($selectedDate) : null;
 ?>
 
 <!DOCTYPE html>
@@ -116,6 +117,22 @@ $gridData = $selectedDate ? $helper->getLifeGrid($selectedDate) : null;
                 <p class="mt-4 text-center text-slate-500 text-xs italic">
                     Based on a standard 80-year human life expectancy.
                 </p>
+            </div>
+
+            <h3 class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-4 ml-2">Life Milestones (Estimated)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <?php foreach ($milestones as $item): ?>
+                    <div class="bg-slate-900 border border-white/5 p-6 rounded-3xl flex items-center gap-5">
+                        <div class="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-2xl">
+                            <?= $item['icon'] ?>
+                        </div>
+                        <div>
+                            <p class="text-indigo-400 font-bold text-xl"><?= $item['value'] ?></p>
+                            <p class="text-white text-sm font-medium"><?= $item['label'] ?></p>
+                            <p class="text-slate-500 text-xs mt-1 leading-relaxed"><?= $item['desc'] ?></p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
 
             <style>

@@ -99,4 +99,39 @@ trait HasHumanTime {
             return ['lived' => 0, 'remaining' => 0, 'total' => 0];
         }
     }
+
+    public function getMilestones(string $date, int $expectancy = 80): array {
+        $start = new DateTime($date);
+        $now = new DateTime();
+        $diff = $now->diff($start);
+        $yearsLived = $diff->y + ($diff->m / 12);
+        
+        // Statistics based on general human averages
+        return [
+            [
+                'label' => 'Sleep Time',
+                'desc' => 'Time spent unconscious (1/3 of life)',
+                'value' => round($yearsLived / 3, 1) . ' years',
+                'icon' => '🌙'
+            ],
+            [
+                'label' => 'Parental Time',
+                'desc' => 'Approx. percentage of total time you will ever spend with parents',
+                'value' => $yearsLived > 18 ? '90%+' : round(($yearsLived / 18) * 100) . '%',
+                'icon' => '🏠'
+            ],
+            [
+                'label' => 'Screen Time',
+                'desc' => 'Based on avg 7hrs/day',
+                'value' => number_format(($yearsLived * 365 * 7) / 24 / 365, 1) . ' years',
+                'icon' => '📱'
+            ],
+            [
+                'label' => 'Heartbeats',
+                'desc' => 'Estimated total beats (avg 80bpm)',
+                'value' => number_format($yearsLived * 365 * 24 * 60 * 80),
+                'icon' => '❤️'
+            ]
+        ];
+    }
 }
